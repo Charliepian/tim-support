@@ -1,8 +1,13 @@
-import type { WPPost, WPCategory, ArticleSummary, ArticleFull } from "./types";
+import type { WPPost, WPCategory, ArticleSummary, ArticleFull, Feature, FeatureTerm } from "./types";
 
 const API_URL =
   process.env.SUPPORT_WP_API_URL ??
   "https://support-tim-management.co/wp-json/wp/v2";
+
+const TIM_API_URL =
+  process.env.SUPPORT_WP_API_URL
+    ? process.env.SUPPORT_WP_API_URL.replace("/wp/v2", "/tim-support/v1")
+    : "https://support-tim-management.co/wp-json/tim-support/v1";
 
 const DEFAULT_REVALIDATE = 3600; // 1h
 
@@ -153,4 +158,94 @@ export async function getAllArticleSlugs(): Promise<string[]> {
 export async function getAllCategorySlugs(): Promise<string[]> {
   const cats = await getCategories();
   return cats.map((c) => c.slug);
+}
+
+// ─── Features ────────────────────────────────────────────────────────────────
+
+async function timFetch<T>(
+  path: string,
+  params: Record<string, string | number> = {},
+  revalidate = DEFAULT_REVALIDATE
+): Promise<T | null> {
+  const url = new URL(`${TIM_API_URL}${path}`);
+  Object.entries(params).forEach(([k, v]) =>
+    url.searchParams.set(k, String(v))
+  );
+
+  try {
+    const res = await fetch(url.toString(), {
+      next: { revalidate },
+      headers: { Accept: "application/json" },
+    });
+
+    if (!res.ok) {
+      console.warn(`TIM API ${res.status} on ${url}`);
+      return null;
+    }
+
+    return res.json() as Promise<T>;
+  } catch (err) {
+    console.warn(`TIM API fetch failed on ${url}:`, err);
+    return null;
+  }
+}
+
+/** Toutes les features (avec filtres optionnels plateforme / catégorie) */
+export async function getFeatures(opts: {
+  platform?: string;
+  category?: string;
+} = {}): Promise<Feature[]> {
+  const params: Record<string, string> = {};
+  if (opts.platform) params.platform = opts.platform;
+  if (opts.category) params.category = opts.category;
+
+  const result = await timFetch<Feature[]>("/features", params);
+  return result ?? [];
+}
+
+/** Feature par slug */
+export async function getFeatureBySlug(slug: string): Promise<Feature | null> {
+  return timFetch<Feature>(`/features/${slug}`);
+}
+
+/** Catégories de features (avec filtre plateforme optionnel) */
+export async function getFeatureCategories(platform?: string): Promise<FeatureTerm[]> {
+  const params: Record<string, string> = {};
+  if (platform) params.platform = platform;
+
+  const result = await timFetch<FeatureTerm[]>("/feature-categories", params);
+  return result ?? [];
+}
+
+/** Plateformes disponibles */
+export async function getPlatforms(): Promise<FeatureTerm[]> {
+  const result = await timFetch<FeatureTerm[]>("/platforms");
+  return result ?? [];
+}
+
+/** Slugs de toutes les features — pour generateStaticParams */
+export async function getAllFeatureSlugs(): Promise<string[]> {
+  const features = await getFeatures();
+  return features.map((f) => f.slug);
+}
+
+/** Envoie un feedback utilisateur (côté client uniquement) */
+export async function submitFeedback(
+  postId: number,
+  helpful: boolean,
+  comment?: string
+): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `${TIM_API_URL}/feedback`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ post_id: postId, helpful, comment }),
+      }
+    );
+    return res.ok;
+  } catch {
+    return false;
+  }
 }

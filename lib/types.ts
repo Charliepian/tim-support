@@ -1,3 +1,54 @@
+// ─── Features ────────────────────────────────────────────────────────────────
+
+export type FeatureStatus = 'Disponible' | 'Beta' | 'Prochainement';
+export type MediaPosition  = 'Droite' | 'Gauche';
+
+export interface FeatureTerm {
+  id:   number;
+  name: string;
+  slug: string;
+}
+
+export type MediaDocItem =
+  | { acf_fc_layout: 'img';      img:     WPMedia }
+  | { acf_fc_layout: 'galerie';  galerie: WPMedia[] }
+  | { acf_fc_layout: 'editeur';  editeur: string }
+  | { acf_fc_layout: 'fichier';  fichier: { url: string; filename: string; filesize: number; mime_type: string } };
+
+export interface DocSection {
+  title_doc:       string;
+  description_doc: string;
+  media_doc:       MediaDocItem[];
+  media_position:  MediaPosition;
+}
+
+export interface FeatureACF {
+  title_feature:     string;
+  short_description: string;
+  status:            FeatureStatus;
+  doc:               DocSection[];
+}
+
+export interface FeatureFeedback {
+  helpful:     number;
+  not_helpful: number;
+}
+
+export interface Feature {
+  id:         number;
+  slug:       string;
+  title:      string;
+  thumbnail:  string | null;
+  platforms:  FeatureTerm[];
+  categories: FeatureTerm[];
+  acf:        FeatureACF;
+  feedback:   FeatureFeedback;
+  modified:   string;
+  content?:   string; // uniquement sur la fiche complète
+}
+
+// ─── Articles ─────────────────────────────────────────────────────────────────
+
 export interface WPCategory {
   id: number;
   name: string;
