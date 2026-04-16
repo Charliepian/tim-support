@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "mcp__claude_ai_Vercel__list_teams",
+      "mcp__claude_ai_Vercel__list_projects",
+      "mcp__claude_ai_Vercel__get_deployment_build_logs",
+      "mcp__claude_ai_Vercel__get_deployment",
+      "Bash(zip -r tim-support-headless.zip tim-support-headless/)",
+      "Bash(rm -f /Users/charliepiancatelli/Desktop/tim-support/wp-theme/tim-support-headless.zip)",
+      "Bash(zip -j /Users/charliepiancatelli/Desktop/tim-support-headless-theme.zip style.css index.php functions.php)",
+      "Bash(unzip -l /Users/charliepiancatelli/Desktop/tim-support-headless-theme.zip)",
+      "Bash(git rm *)",
+      "Bash(zip -r /Users/charliepiancatelli/Desktop/tim-support-api.zip tim-support-api/)",
+      "Bash(git -C /Users/charliepiancatelli/Desktop/tim-support ls-files middleware.ts)"
+    ]
+  }
+}

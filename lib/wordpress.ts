@@ -208,12 +208,9 @@ export async function getFeatureBySlug(slug: string): Promise<Feature | null> {
   return timFetch<Feature>(`/features/${slug}`);
 }
 
-/** Catégories de features (avec filtre plateforme optionnel) */
-export async function getFeatureCategories(platform?: string): Promise<FeatureTerm[]> {
-  const params: Record<string, string> = {};
-  if (platform) params.platform = platform;
-
-  const result = await timFetch<FeatureTerm[]>("/feature-categories", params);
+/** Toutes les catégories de features avec leur hiérarchie (parent inclus) */
+export async function getFeatureCategories(): Promise<FeatureTerm[]> {
+  const result = await timFetch<FeatureTerm[]>("/feature-categories");
   return result ?? [];
 }
 

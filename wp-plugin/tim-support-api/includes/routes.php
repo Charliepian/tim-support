@@ -75,39 +75,24 @@ add_action( 'rest_api_init', function () {
         'methods'             => 'GET',
         'permission_callback' => '__return_true',
         'callback'            => function ( WP_REST_Request $req ) {
-            $platform = sanitize_text_field( $req->get_param( 'platform' ) ?: '' );
-
             $terms = get_terms( [
                 'taxonomy'   => 'feature_category',
-                'hide_empty' => true,
+                'hide_empty' => false,
                 'orderby'    => 'name',
                 'order'      => 'ASC',
             ] );
 
             if ( is_wp_error( $terms ) ) return [];
 
-            // Filtre : ne garder que les catégories avec au moins une feature
-            // sur la plateforme demandée
-            if ( $platform ) {
-                $terms = array_filter( $terms, function ( $term ) use ( $platform ) {
-                    return ! empty( get_posts( [
-                        'post_type'      => 'feature',
-                        'post_status'    => 'publish',
-                        'posts_per_page' => 1,
-                        'fields'         => 'ids',
-                        'tax_query'      => [
-                            [ 'taxonomy' => 'platform',         'field' => 'slug',    'terms' => $platform       ],
-                            [ 'taxonomy' => 'feature_category', 'field' => 'term_id', 'terms' => $term->term_id  ],
-                        ],
-                    ] ) );
-                } );
-            }
+            // Exclure "non-classé"
+            $terms = array_filter( $terms, fn( $t ) => $t->slug !== 'non-classe' );
 
             return array_values( array_map( fn( $t ) => [
-                'id'    => $t->term_id,
-                'name'  => $t->name,
-                'slug'  => $t->slug,
-                'count' => (int) $t->count,
+                'id'     => $t->term_id,
+                'name'   => $t->name,
+                'slug'   => $t->slug,
+                'count'  => (int) $t->count,
+                'parent' => (int) $t->parent,
             ], $terms ) );
         },
     ] );
