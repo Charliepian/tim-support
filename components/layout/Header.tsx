@@ -9,9 +9,9 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
-            src="https://tim-management.co/wp-content/uploads/logo.png"
+            src="https://support-tim-management.co/wp-content/uploads/2026/04/logo_tim_management_nom.webp"
             alt="TIM Management"
-            width={32}
+            width={160}
             height={32}
             className="h-8 w-auto"
           />
