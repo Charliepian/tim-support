@@ -4,9 +4,10 @@ export type FeatureStatus = 'Disponible' | 'Beta' | 'Prochainement';
 export type MediaPosition  = 'Droite' | 'Gauche';
 
 export interface FeatureTerm {
-  id:   number;
-  name: string;
-  slug: string;
+  id:    number;
+  name:  string;
+  slug:  string;
+  count?: number;
 }
 
 export type MediaDocItem =
