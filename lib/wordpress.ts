@@ -10,22 +10,28 @@ async function wpFetch<T>(
   path: string,
   params: Record<string, string | number> = {},
   revalidate = DEFAULT_REVALIDATE
-): Promise<T> {
+): Promise<T | null> {
   const url = new URL(`${API_URL}${path}`);
   Object.entries(params).forEach(([k, v]) =>
     url.searchParams.set(k, String(v))
   );
 
-  const res = await fetch(url.toString(), {
-    next: { revalidate },
-    headers: { Accept: "application/json" },
-  });
+  try {
+    const res = await fetch(url.toString(), {
+      next: { revalidate },
+      headers: { Accept: "application/json" },
+    });
 
-  if (!res.ok) {
-    throw new Error(`WP API error ${res.status} on ${url}`);
+    if (!res.ok) {
+      console.warn(`WP API ${res.status} on ${url}`);
+      return null;
+    }
+
+    return res.json() as Promise<T>;
+  } catch (err) {
+    console.warn(`WP API fetch failed on ${url}:`, err);
+    return null;
   }
-
-  return res.json() as Promise<T>;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -63,12 +69,13 @@ function toFull(post: WPPost): ArticleFull {
 
 /** Toutes les catégories (exclut parent = 0 si vous avez des sous-catégories) */
 export async function getCategories(): Promise<WPCategory[]> {
-  return wpFetch<WPCategory[]>("/categories", {
+  const result = await wpFetch<WPCategory[]>("/categories", {
     per_page: 50,
     hide_empty: 1,
     orderby: "count",
     order: "desc",
   });
+  return result ?? [];
 }
 
 /** Articles récents (page d'accueil) */
@@ -81,7 +88,7 @@ export async function getRecentArticles(
     orderby: "date",
     order: "desc",
   });
-  return posts.map(toSummary);
+  return (posts ?? []).map(toSummary);
 }
 
 /** Articles par catégorie */
@@ -96,7 +103,7 @@ export async function getArticlesByCategory(
     page,
     _embed: "wp:featuredmedia,wp:term",
   });
-  return posts.map(toSummary);
+  return (posts ?? []).map(toSummary);
 }
 
 /** Article par slug */
@@ -107,7 +114,7 @@ export async function getArticleBySlug(
     slug,
     _embed: "wp:featuredmedia,wp:term",
   });
-  if (!posts.length) return null;
+  if (!posts?.length) return null;
   return toFull(posts[0]);
 }
 
@@ -122,7 +129,7 @@ export async function searchArticles(
     per_page: perPage,
     _embed: "wp:featuredmedia,wp:term",
   });
-  return posts.map(toSummary);
+  return (posts ?? []).map(toSummary);
 }
 
 /** Catégorie par slug */
@@ -130,16 +137,16 @@ export async function getCategoryBySlug(
   slug: string
 ): Promise<WPCategory | null> {
   const cats = await wpFetch<WPCategory[]>("/categories", { slug });
-  return cats[0] ?? null;
+  return cats?.[0] ?? null;
 }
 
-/** Slugs de tous les articles (pour generateStaticParams) */
+/** Slugs de tous les articles — retourne [] si l'API est inaccessible */
 export async function getAllArticleSlugs(): Promise<string[]> {
   const posts = await wpFetch<WPPost[]>("/posts", {
     per_page: 100,
     fields: "slug",
   });
-  return posts.map((p) => p.slug);
+  return (posts ?? []).map((p) => p.slug);
 }
 
 /** Slugs de toutes les catégories */
