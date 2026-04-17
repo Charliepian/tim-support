@@ -36,7 +36,7 @@ export default async function SearchPage({
 
       {query ? (
         <>
-          <p className="text-sm text-[var(--color-muted)] mb-6">
+          <p className="text-sm text-muted mb-6">
             {results.length === 0
               ? `Aucun résultat pour « ${query} »`
               : `${results.length} résultat${results.length > 1 ? "s" : ""} pour « ${query} »`}
@@ -51,14 +51,14 @@ export default async function SearchPage({
           ) : (
             <div className="text-center py-12 space-y-3">
               <p className="text-4xl">🔍</p>
-              <p className="font-medium text-[var(--color-text)]">
+              <p className="font-medium text-foreground">
                 Aucun article trouvé
               </p>
-              <p className="text-sm text-[var(--color-muted)]">
+              <p className="text-sm text-muted">
                 Essayez avec des mots-clés différents ou{" "}
                 <a
                   href="https://tim-management.co/contact"
-                  className="text-[var(--color-primary)] underline"
+                  className="text-primary underline"
                 >
                   contactez le support
                 </a>
@@ -68,7 +68,7 @@ export default async function SearchPage({
           )}
         </>
       ) : (
-        <p className="text-[var(--color-muted)]">
+        <p className="text-muted">
           Saisissez un terme pour lancer la recherche.
         </p>
       )}

@@ -16,7 +16,15 @@
       "Bash(unzip -l /Users/charliepiancatelli/Desktop/tim-support-headless-theme.zip)",
       "Bash(git rm *)",
       "Bash(zip -r /Users/charliepiancatelli/Desktop/tim-support-api.zip tim-support-api/)",
-      "Bash(git -C /Users/charliepiancatelli/Desktop/tim-support ls-files middleware.ts)"
+      "Bash(git -C /Users/charliepiancatelli/Desktop/tim-support ls-files middleware.ts)",
+      "Bash(rm -f /Users/charliepiancatelli/Desktop/tim-support-api.zip)",
+      "Bash(unzip -l /Users/charliepiancatelli/Desktop/tim-support-api.zip)",
+      "Bash(python3 -)",
+      "Bash(sed -i '' 's/hover:bg-\\\\[var\\(--color-muted\\)\\\\]/hover:bg-muted/g' /Users/charliepiancatelli/Desktop/tim-support/components/features/ImageCarousel.tsx)",
+      "Bash(sed -i '' 's/from-\\\\[var\\(--color-primary-light\\)\\\\]/from-primary-light/g' /Users/charliepiancatelli/Desktop/tim-support/app/page.tsx)",
+      "mcp__claude_ai_Vercel__deploy_to_vercel",
+      "Bash(vercel --version)",
+      "Bash(vercel deploy *)"
     ]
   }
 }

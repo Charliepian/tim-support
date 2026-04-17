@@ -27,10 +27,10 @@ export default function SearchBar({ compact, defaultValue = "" }: SearchBarProps
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher..."
-          className="w-full h-9 pl-9 pr-3 text-sm bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-md)] outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
+          className="w-full h-9 pl-9 pr-3 text-sm bg-surface border border-border rounded-md outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
         />
         <svg
-          className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-muted)]"
+          className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -50,10 +50,10 @@ export default function SearchBar({ compact, defaultValue = "" }: SearchBarProps
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Rechercher un guide, une fonctionnalité..."
-        className="w-full h-13 pl-12 pr-4 text-base bg-white border-2 border-[var(--color-border)] rounded-[var(--radius-lg)] outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] shadow-sm transition"
+        className="w-full h-13 pl-12 pr-4 text-base bg-white border-2 border-border rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition"
       />
       <svg
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-muted)]"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -64,7 +64,7 @@ export default function SearchBar({ compact, defaultValue = "" }: SearchBarProps
       </svg>
       <button
         type="submit"
-        className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-[var(--color-primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-primary-dark)] transition"
+        className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition"
       >
         Rechercher
       </button>

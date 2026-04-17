@@ -4,6 +4,20 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import type { FeatureTerm } from "@/lib/types";
+import { useActiveCategory } from "@/app/features/active-category-context";
+
+/** Retourne vrai si ce nœud est le match le plus profond parmi les slugs actifs.
+ *  Un nœud est "le plus spécifique" s'il est dans les slugs ET qu'aucun de ses
+ *  descendants ne l'est aussi (sinon c'est un ancêtre, pas la feuille active). */
+function isDeepestMatch(node: TreeNode, activeSlugs: string[]): boolean {
+  if (!activeSlugs.includes(node.slug)) return false;
+  return !node.children.some((child) => containsAny(child, activeSlugs));
+}
+
+function containsAny(node: TreeNode, slugs: string[]): boolean {
+  if (slugs.includes(node.slug)) return true;
+  return node.children.some((c) => containsAny(c, slugs));
+}
 
 interface TreeNode extends FeatureTerm {
   children: TreeNode[];
@@ -51,14 +65,20 @@ function ChevronIcon({ open }: { open: boolean }) {
 function NavItem({
   node,
   active,
+  activeSlugs,
   depth = 0,
 }: {
-  node:    TreeNode;
-  active:  string;
-  depth?:  number;
+  node:        TreeNode;
+  active:      string;        // slug depuis searchParams (page liste)
+  activeSlugs: string[];      // slugs depuis contexte (page feature)
+  depth?:      number;
 }) {
-  const isActive  = active === node.slug;
-  const hasActive = containsActive(node, active);
+  const isActive  = active
+    ? active === node.slug
+    : isDeepestMatch(node, activeSlugs);
+  const hasActive = active
+    ? containsActive(node, active)
+    : containsAny(node, activeSlugs);
   const [open, setOpen] = useState(hasActive || depth === 0);
 
   // Ouvre automatiquement si un enfant devient actif
@@ -75,15 +95,15 @@ function NavItem({
         {/* Lien principal */}
         <Link
           href={`/features?category=${node.slug}`}
-          className={`flex-1 flex items-center gap-1.5 py-1.5 px-2 rounded-[var(--radius-md)] text-sm transition-all ${
+          className={`flex-1 flex items-center gap-1.5 py-1.5 px-2 rounded-md text-sm transition-all ${
             isActive
-              ? "text-[var(--color-primary)] font-medium bg-[var(--color-primary-light)]"
-              : "text-[var(--color-text)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]"
-          } ${isActive ? "border-l-2 border-[var(--color-primary)] rounded-l-none pl-[6px]" : "border-l-2 border-transparent"}`}
+              ? "text-primary font-medium bg-primary-light"
+              : "text-foreground hover:text-foreground hover:bg-surface"
+          } ${isActive ? "border-l-2 border-primary rounded-l-none pl-[6px]" : "border-l-2 border-transparent"}`}
         >
           {node.name}
           {node.count !== undefined && node.count > 0 && (
-            <span className={`ml-auto text-xs tabular-nums ${isActive ? "text-[var(--color-primary)]" : "text-[var(--color-muted)]"}`}>
+            <span className={`ml-auto text-xs tabular-nums ${isActive ? "text-primary" : "text-muted"}`}>
               {node.count}
             </span>
           )}
@@ -93,7 +113,7 @@ function NavItem({
         {hasChildren && (
           <button
             onClick={() => setOpen((o) => !o)}
-            className="p-1.5 text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors"
+            className="p-1.5 text-muted hover:text-foreground transition-colors"
             aria-label={open ? "Réduire" : "Développer"}
           >
             <ChevronIcon open={open} />
@@ -103,9 +123,9 @@ function NavItem({
 
       {/* Enfants */}
       {hasChildren && open && (
-        <ul className="mt-0.5 space-y-0.5 border-l border-[var(--color-border)] ml-4">
+        <ul className="mt-0.5 space-y-0.5 border-l border-border ml-4">
           {node.children.map((child) => (
-            <NavItem key={child.id} node={child} active={active} depth={depth + 1} />
+            <NavItem key={child.id} node={child} active={active} activeSlugs={activeSlugs} depth={depth + 1} />
           ))}
         </ul>
       )}
@@ -114,9 +134,12 @@ function NavItem({
 }
 
 export default function FeatureSidebar({ categories }: { categories: FeatureTerm[] }) {
-  const searchParams  = useSearchParams();
-  const currentCat    = searchParams.get("category") ?? "";
-  const tree          = buildTree(categories);
+  const searchParams = useSearchParams();
+  const { slugs: ctxSlugs } = useActiveCategory();
+  // Page liste (/features?category=xxx) → searchParams
+  // Page feature (/features/[slug])     → contexte avec tous les slugs
+  const currentCat  = searchParams.get("category") ?? "";
+  const tree        = buildTree(categories);
 
   return (
     <aside className="w-56 shrink-0 hidden lg:block">
@@ -126,20 +149,20 @@ export default function FeatureSidebar({ categories }: { categories: FeatureTerm
           <li>
             <Link
               href="/features"
-              className={`flex items-center gap-2 py-1.5 px-2 rounded-[var(--radius-md)] text-sm transition-all border-l-2 ${
-                !currentCat
-                  ? "text-[var(--color-primary)] font-medium bg-[var(--color-primary-light)] border-[var(--color-primary)]"
-                  : "text-[var(--color-text)] hover:bg-[var(--color-surface)] border-transparent"
+              className={`flex items-center gap-2 py-1.5 px-2 rounded-md text-sm transition-all border-l-2 ${
+                !currentCat && ctxSlugs.length === 0
+                  ? "text-primary font-medium bg-primary-light border-primary"
+                  : "text-foreground hover:bg-surface border-transparent"
               }`}
             >
               Toutes les fonctionnalités
             </Link>
           </li>
 
-          <li><div className="my-2 border-t border-[var(--color-border)]" /></li>
+          <li><div className="my-2 border-t border-border" /></li>
 
           {tree.map((root) => (
-            <NavItem key={root.id} node={root} active={currentCat} depth={0} />
+            <NavItem key={root.id} node={root} active={currentCat} activeSlugs={ctxSlugs} depth={0} />
           ))}
         </ul>
       </nav>

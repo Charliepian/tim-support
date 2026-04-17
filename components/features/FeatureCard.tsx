@@ -11,11 +11,11 @@ export default function FeatureCard({ feature }: { feature: Feature }) {
   return (
     <Link
       href={`/features/${feature.slug}`}
-      className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white hover:border-[var(--color-primary)] hover:shadow-sm transition-all overflow-hidden"
+      className="group flex flex-col rounded-lg border border-border bg-white hover:border-[#b4b4b4] hover:shadow-sm transition-all overflow-hidden"
     >
       {/* Thumbnail */}
       {feature.thumbnail && (
-        <div className="relative aspect-video overflow-hidden bg-[var(--color-surface)]">
+        <div className="relative aspect-video overflow-hidden bg-surface">
           <Image
             src={feature.thumbnail}
             alt={feature.title}
@@ -35,7 +35,7 @@ export default function FeatureCard({ feature }: { feature: Feature }) {
           {feature.platforms.map((p) => (
             <span
               key={p.id}
-              className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)]"
+              className="text-xs font-medium px-2 py-0.5 rounded-full bg-absence-bg text-absence border border-absence/30"
             >
               {p.name}
             </span>
@@ -43,13 +43,13 @@ export default function FeatureCard({ feature }: { feature: Feature }) {
         </div>
 
         {/* Titre */}
-        <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors leading-snug">
+        <h3 className="font-semibold text-foreground group-hover:text-foreground transition-colors leading-snug">
           {feature.acf?.title_feature || feature.title}
         </h3>
 
         {/* Extrait */}
         {excerpt && (
-          <p className="text-sm text-[var(--color-muted)] line-clamp-2 leading-relaxed">
+          <p className="text-sm text-muted line-clamp-2 leading-relaxed">
             {excerpt}
           </p>
         )}

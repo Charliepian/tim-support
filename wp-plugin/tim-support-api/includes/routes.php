@@ -155,10 +155,86 @@ add_action( 'rest_api_init', function () {
 
 } );
 
-// ── Helper interne ────────────────────────────────────────────────────────────
+// ── Helpers internes ──────────────────────────────────────────────────────────
+
+/**
+ * Normalise une image ACF vers le format attendu par le front.
+ * Gère : objet ACF (url/alt/width/height), objet WP REST (source_url), ou ID entier.
+ */
+function _tim_normalize_image( $img ): array {
+    // Objet ACF brut (tableau avec 'url')
+    if ( is_array( $img ) && ! empty( $img['url'] ) ) {
+        return [
+            'id'            => $img['ID']    ?? $img['id'] ?? 0,
+            'source_url'    => $img['url'],
+            'alt_text'      => $img['alt']   ?? '',
+            'media_details' => [
+                'width'  => $img['width']  ?? 0,
+                'height' => $img['height'] ?? 0,
+                'sizes'  => [],
+            ],
+        ];
+    }
+
+    // Déjà normalisé (source_url présent)
+    if ( is_array( $img ) && ! empty( $img['source_url'] ) ) {
+        return $img;
+    }
+
+    // ID entier → on récupère les données via WordPress
+    $id = is_int( $img ) ? $img : ( is_array( $img ) ? ( $img['ID'] ?? $img['id'] ?? 0 ) : 0 );
+    if ( $id > 0 ) {
+        $src  = wp_get_attachment_image_src( $id, 'large' );
+        $meta = wp_get_attachment_metadata( $id );
+        return [
+            'id'            => $id,
+            'source_url'    => $src ? $src[0] : '',
+            'alt_text'      => get_post_meta( $id, '_wp_attachment_image_alt', true ) ?? '',
+            'media_details' => [
+                'width'  => $src ? $src[1] : ( $meta['width']  ?? 0 ),
+                'height' => $src ? $src[2] : ( $meta['height'] ?? 0 ),
+                'sizes'  => [],
+            ],
+        ];
+    }
+
+    return [ 'id' => 0, 'source_url' => '', 'alt_text' => '', 'media_details' => [ 'width' => 0, 'height' => 0, 'sizes' => [] ] ];
+}
+
+/**
+ * Normalise les images dans les sections doc (repeater + flexible content).
+ */
+function _tim_normalize_doc( array $doc ): array {
+    return array_map( function ( $section ) {
+        if ( ! isset( $section['media_doc'] ) || ! is_array( $section['media_doc'] ) ) {
+            return $section;
+        }
+
+        $section['media_doc'] = array_map( function ( $item ) {
+            $layout = $item['acf_fc_layout'] ?? '';
+
+            if ( $layout === 'img' && isset( $item['img'] ) ) {
+                $item['img'] = _tim_normalize_image( $item['img'] );
+            }
+
+            if ( $layout === 'galerie' && isset( $item['galerie'] ) && is_array( $item['galerie'] ) ) {
+                $item['galerie'] = array_map( '_tim_normalize_image', $item['galerie'] );
+            }
+
+            return $item;
+        }, $section['media_doc'] );
+
+        return $section;
+    }, $doc );
+}
 
 function _tim_format_feature( WP_Post $post, bool $full ): array {
     $acf = function_exists( 'get_fields' ) ? ( get_fields( $post->ID ) ?: [] ) : [];
+
+    // Normaliser les images des sections doc
+    if ( isset( $acf['doc'] ) && is_array( $acf['doc'] ) ) {
+        $acf['doc'] = _tim_normalize_doc( $acf['doc'] );
+    }
 
     $platforms  = wp_get_post_terms( $post->ID, 'platform',         [ 'fields' => 'all' ] );
     $categories = wp_get_post_terms( $post->ID, 'feature_category', [ 'fields' => 'all' ] );

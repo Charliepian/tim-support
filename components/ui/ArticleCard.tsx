@@ -15,7 +15,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="group flex flex-col gap-2 p-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all bg-white"
+      className="group flex flex-col gap-2 p-4 rounded-lg border border-border hover:border-[#b4b4b4] hover:shadow-sm transition-all bg-white"
     >
       {/* Catégories */}
       {article.categories.length > 0 && (
@@ -23,7 +23,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           {article.categories.slice(0, 2).map((cat) => (
             <span
               key={cat.id}
-              className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)]"
+              className="text-xs font-medium px-2 py-0.5 rounded-full bg-absence-bg text-absence border border-absence/30"
             >
               {cat.name}
             </span>
@@ -32,19 +32,19 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       )}
 
       {/* Titre */}
-      <h3 className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors leading-snug">
+      <h3 className="font-semibold text-foreground group-hover:text-foreground transition-colors leading-snug">
         {article.title}
       </h3>
 
       {/* Extrait */}
       {article.excerpt && (
-        <p className="text-sm text-[var(--color-muted)] line-clamp-2 leading-relaxed">
+        <p className="text-sm text-muted line-clamp-2 leading-relaxed">
           {article.excerpt}
         </p>
       )}
 
       {/* Date */}
-      <p className="text-xs text-[var(--color-muted)] mt-auto pt-1">{date}</p>
+      <p className="text-xs text-muted mt-auto pt-1">{date}</p>
     </Link>
   );
 }

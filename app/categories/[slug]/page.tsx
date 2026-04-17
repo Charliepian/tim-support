@@ -53,19 +53,19 @@ export default async function CategoryPage({
       <Breadcrumb items={[{ label: category.name }]} />
 
       <header className="mt-6 mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
           {category.name}
         </h1>
         {category.description && (
-          <p className="mt-2 text-[var(--color-muted)]">{category.description}</p>
+          <p className="mt-2 text-muted">{category.description}</p>
         )}
-        <p className="mt-1 text-sm text-[var(--color-muted)]">
+        <p className="mt-1 text-sm text-muted">
           {category.count} article{category.count > 1 ? "s" : ""}
         </p>
       </header>
 
       {articles.length === 0 ? (
-        <p className="text-[var(--color-muted)]">Aucun article dans cette catégorie.</p>
+        <p className="text-muted">Aucun article dans cette catégorie.</p>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {articles.map((article) => (

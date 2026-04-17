@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import StatusBadge from "@/components/features/StatusBadge";
 import DocSection from "@/components/features/DocSection";
 import FeedbackWidget from "@/components/features/FeedbackWidget";
+import { SetActiveCategory } from "@/app/features/active-category-context";
 
 export const revalidate = 3600;
 
@@ -55,7 +56,10 @@ export default async function FeaturePage({
   const sections = feature.acf?.doc ?? [];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="max-w-5xl px-8 py-8">
+      {feature.categories.length > 0 && (
+        <SetActiveCategory slugs={feature.categories.map((c) => c.slug)} />
+      )}
       <Breadcrumb items={breadcrumb} />
 
       {/* En-tête */}
@@ -66,25 +70,25 @@ export default async function FeaturePage({
           {feature.platforms.map((p) => (
             <span
               key={p.id}
-              className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)]"
+              className="text-xs font-medium px-2 py-0.5 rounded-full bg-absence-bg text-absence border border-absence/30"
             >
               {p.name}
             </span>
           ))}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
           {feature.acf?.title_feature || feature.title}
         </h1>
 
-        <p className="mt-2 text-xs text-[var(--color-muted)]">
+        <p className="mt-2 text-xs text-muted">
           Mis à jour le {updatedDate}
         </p>
 
         {/* Description courte */}
         {feature.acf?.short_description && (
           <div
-            className="mt-4 text-[var(--color-muted)] leading-relaxed wp-content"
+            className="mt-4 text-muted leading-relaxed wp-content"
             dangerouslySetInnerHTML={{ __html: feature.acf.short_description }}
           />
         )}
@@ -92,7 +96,7 @@ export default async function FeaturePage({
 
       {/* Séparateur */}
       {sections.length > 0 && (
-        <div className="border-t border-[var(--color-border)]" />
+        <div className="border-t border-border" />
       )}
 
       {/* Sections doc */}

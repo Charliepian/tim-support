@@ -72,17 +72,17 @@ export default async function ArticlePage({
                 {article.categories.map((cat) => (
                   <span
                     key={cat.id}
-                    className="text-xs font-medium px-2.5 py-1 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)]"
+                    className="text-xs font-medium px-2.5 py-1 rounded-full bg-absence-bg text-absence border border-absence/30"
                   >
                     {cat.name}
                   </span>
                 ))}
               </div>
             )}
-            <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
               {article.title}
             </h1>
-            <p className="mt-2 text-sm text-[var(--color-muted)]">
+            <p className="mt-2 text-sm text-muted">
               Mis à jour le {updatedDate}
             </p>
           </header>
@@ -94,15 +94,15 @@ export default async function ArticlePage({
           />
 
           {/* Feedback */}
-          <div className="mt-12 pt-6 border-t border-[var(--color-border)] flex items-center gap-4">
-            <p className="text-sm text-[var(--color-muted)]">
+          <div className="mt-12 pt-6 border-t border-border flex items-center gap-4">
+            <p className="text-sm text-muted">
               Cet article vous a été utile ?
             </p>
             <div className="flex gap-2">
-              <button className="text-sm px-3 py-1.5 rounded-[var(--radius-md)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition">
+              <button className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-[#b4b4b4] hover:text-foreground transition">
                 👍 Oui
               </button>
-              <button className="text-sm px-3 py-1.5 rounded-[var(--radius-md)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition">
+              <button className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-[#b4b4b4] hover:text-foreground transition">
                 👎 Non
               </button>
             </div>
@@ -113,7 +113,7 @@ export default async function ArticlePage({
         {related.length > 0 && (
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24">
-              <h2 className="text-sm font-semibold text-[var(--color-muted)] uppercase tracking-wider mb-4">
+              <h2 className="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
                 Articles liés
               </h2>
               <div className="flex flex-col gap-3">

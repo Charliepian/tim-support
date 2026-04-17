@@ -172,9 +172,11 @@ async function timFetch<T>(
     url.searchParams.set(k, String(v))
   );
 
+  const isDev = process.env.NODE_ENV === "development";
+
   try {
     const res = await fetch(url.toString(), {
-      next: { revalidate },
+      ...(isDev ? { cache: "no-store" } : { next: { revalidate } }),
       headers: { Accept: "application/json" },
     });
 

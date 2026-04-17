@@ -1,40 +1,99 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary: #1a56db;
-  --color-primary-dark: #1e429f;
-  --color-primary-light: #e8f0fe;
-  --color-surface: #f8fafc;
-  --color-border: #e2e8f0;
-  --color-text: #1e293b;
-  --color-muted: #64748b;
+/* ─── Design tokens — source unique de vérité ──────────────────────────────
+   Identiques aux UI_COLORS / UI_SIZES du logiciel TIM Management.
+   Modifier ici = répercussion automatique sur tout le site support.
+   Tailwind v4 génère les utilitaires depuis @theme :
+     --color-primary  → bg-primary, text-primary, border-primary …
+     --radius-*       → rounded-sm, rounded-md, rounded-lg …
+   ──────────────────────────────────────────────────────────────────────── */
 
+@theme {
+  /* ── Couleur principale — rouge de l'app (actions, liens, actifs) ── */
+  --color-primary:       #fe5464;
+  --color-primary-dark:  #e03e4d;
+  --color-primary-light: #fff0f1;
+
+  /* ── Neutrals ── */
+  --color-foreground: #505050;   /* neutralDark   */
+  --color-muted:      #b4b4b4;   /* neutralMedium */
+  --color-surface:    #F8F9FB;   /* sectionBg     */
+  --color-border:     #d2d2d6;   /* rowBorder     */
+
+  /* ── Success ── */
+  --color-success:      #1bc181;
+  --color-success-bg:   #E8FCEE;
+  --color-success-text: #407F6C;
+
+  /* ── Danger ── */
+  --color-danger:       #ff7e7e;
+  --color-danger-bg:    #ffdada;
+
+  /* ── Absence (info) ── */
+  --color-absence:      #4A90E2;
+  --color-absence-bg:   #DAE6FF;
+
+  /* ── Processing (warning) ── */
+  --color-processing:      #FCC35B;
+  --color-processing-bg:   #FFF5E0;
+  --color-processing-text: #8A5C2E;
+
+  /* ── Unavailable ── */
+  --color-unavailable:    #9281C8;
+  --color-unavailable-bg: #E5DCF8;
+
+  /* ── UI éléments ── */
+  --color-chip-text:   #6A7A81;
+  --color-action-icon: #8186aa;
+
+  /* ── Boutons — alias du primary (même couleur rouge) ── */
+  --color-btn:       var(--color-primary);
+  --color-btn-dark:  var(--color-primary-dark);
+  --color-btn-light: var(--color-primary-light);
+
+  /* ── Typographie ── */
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
+  /* ── Rayons ── */
+  --radius-sm:  0.375rem;    /* badges, tags           */
+  --radius-md:  0.5rem;      /* inputs, cartes petites */
+  --radius-lg:  0.75rem;     /* cartes, modales        */
+  --radius-btn: 0.3125rem;   /* 5px — boutons (app)    */
 }
 
-* {
-  box-sizing: border-box;
-}
+/* ─── Reset ─────────────────────────────────────────────────────────────── */
 
-html {
-  scroll-behavior: smooth;
-}
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-sans);
-  color: var(--color-text);
+  color: var(--color-foreground);
   background: #ffffff;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Prose pour le contenu des articles WP */
+/* ─── Carousel animations ───────────────────────────────────────────────── */
+
+@keyframes carousel-in-right {
+  from { opacity: 0; transform: translateX(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateX(0)    scale(1);    }
+}
+
+@keyframes carousel-in-left {
+  from { opacity: 0; transform: translateX(-24px) scale(0.97); }
+  to   { opacity: 1; transform: translateX(0)     scale(1);    }
+}
+
+.carousel-in-right { animation: carousel-in-right 0.32s cubic-bezier(.25,.46,.45,.94) both; }
+.carousel-in-left  { animation: carousel-in-left  0.32s cubic-bezier(.25,.46,.45,.94) both; }
+
+/* ─── Contenu WordPress (articles, descriptions features) ──────────────── */
+
 .wp-content {
   line-height: 1.75;
-  color: var(--color-text);
+  color: var(--color-foreground);
 }
 
 .wp-content h2 {
@@ -42,7 +101,7 @@ body {
   font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
-  color: var(--color-text);
+  color: var(--color-foreground);
 }
 
 .wp-content h3 {
@@ -52,36 +111,17 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.wp-content p {
-  margin-bottom: 1rem;
-}
+.wp-content p   { margin-bottom: 1rem; }
 
 .wp-content ul,
-.wp-content ol {
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
-}
+.wp-content ol  { padding-left: 1.5rem; margin-bottom: 1rem; }
 
-.wp-content ul {
-  list-style-type: disc;
-}
+.wp-content ul  { list-style-type: disc; }
+.wp-content ol  { list-style-type: decimal; }
+.wp-content li  { margin-bottom: 0.375rem; }
 
-.wp-content ol {
-  list-style-type: decimal;
-}
-
-.wp-content li {
-  margin-bottom: 0.375rem;
-}
-
-.wp-content a {
-  color: var(--color-primary);
-  text-decoration: underline;
-}
-
-.wp-content a:hover {
-  color: var(--color-primary-dark);
-}
+.wp-content a { color: var(--color-primary); text-decoration: underline; }
+.wp-content a:hover { color: var(--color-primary-dark); }
 
 .wp-content img {
   max-width: 100%;
@@ -99,15 +139,8 @@ body {
   font-family: "Fira Code", "Cascadia Code", monospace;
 }
 
-.wp-content pre {
-  padding: 1rem;
-  overflow-x: auto;
-  margin-bottom: 1rem;
-}
-
-.wp-content code {
-  padding: 0.125rem 0.375rem;
-}
+.wp-content pre  { padding: 1rem; overflow-x: auto; margin-bottom: 1rem; }
+.wp-content code { padding: 0.125rem 0.375rem; }
 
 .wp-content blockquote {
   border-left: 4px solid var(--color-primary);
@@ -125,13 +158,5 @@ body {
 }
 
 .wp-content th,
-.wp-content td {
-  border: 1px solid var(--color-border);
-  padding: 0.625rem 0.875rem;
-  text-align: left;
-}
-
-.wp-content th {
-  background: var(--color-surface);
-  font-weight: 600;
-}
+.wp-content td  { border: 1px solid var(--color-border); padding: 0.625rem 0.875rem; text-align: left; }
+.wp-content th  { background: var(--color-surface); font-weight: 600; }
