@@ -1,30 +1,31 @@
-import { getCategories, getRecentArticles } from "@/lib/wordpress";
-import ArticleCard from "@/components/ui/ArticleCard";
+import { getFeatures, getFeatureCategories } from "@/lib/wordpress";
 import SearchBar from "@/components/ui/SearchBar";
+import FeatureCard from "@/components/features/FeatureCard";
 import Link from "next/link";
+import type { FeatureTerm } from "@/lib/types";
 
 export const revalidate = 3600;
 
-// Icônes par catégorie (à adapter selon vos catégories WP)
-const CATEGORY_ICONS: Record<string, string> = {
-  pointage: "⏱️",
-  planning: "📅",
-  "feuille-d-heures": "📋",
-  employes: "👷",
-  chantiers: "🏗️",
-  factures: "🧾",
-  vehicules: "🚛",
-  engins: "🚜",
-  parametres: "⚙️",
+const PLATFORM_ICONS: Record<string, string> = {
+  web:    "🖥️",
   mobile: "📱",
-  default: "📄",
 };
 
 export default async function HomePage() {
-  const [categories, recentArticles] = await Promise.all([
-    getCategories(),
-    getRecentArticles(6),
+  const [allFeatures, categories] = await Promise.all([
+    getFeatures(),
+    getFeatureCategories(),
   ]);
+
+  // Catégories racines (Web, Mobile)
+  const roots = categories.filter((c) => !c.parent || c.parent === 0);
+
+  // Sous-catégories directes par parent
+  const childrenOf = (parentId: number): FeatureTerm[] =>
+    categories.filter((c) => c.parent === parentId);
+
+  // 6 features récentes
+  const recent = allFeatures.slice(0, 6);
 
   return (
     <>
@@ -42,29 +43,54 @@ export default async function HomePage() {
       </section>
 
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-14">
-        {/* Catégories */}
-        {categories.length > 0 && (
+
+        {/* Parcourir par plateforme */}
+        {roots.length > 0 && (
           <section>
             <h2 className="text-xl font-bold text-[var(--color-text)] mb-6">
-              Parcourir par thème
+              Parcourir par fonctionnalité
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {categories.map((cat) => {
-                const icon =
-                  CATEGORY_ICONS[cat.slug] ?? CATEGORY_ICONS.default;
+            <div className="grid sm:grid-cols-2 gap-4">
+              {roots.map((root) => {
+                const children = childrenOf(root.id);
+                const icon = PLATFORM_ICONS[root.slug] ?? "📦";
+
                 return (
                   <Link
-                    key={cat.id}
-                    href={`/categories/${cat.slug}`}
-                    className="flex flex-col items-center gap-2 p-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all bg-white text-center group"
+                    key={root.id}
+                    href={`/features?category=${root.slug}`}
+                    className="group flex flex-col gap-3 p-5 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white hover:border-[var(--color-primary)] hover:shadow-sm transition-all"
                   >
-                    <span className="text-2xl">{icon}</span>
-                    <span className="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
-                      {cat.name}
-                    </span>
-                    <span className="text-xs text-[var(--color-muted)]">
-                      {cat.count} article{cat.count > 1 ? "s" : ""}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{icon}</span>
+                      <div>
+                        <p className="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
+                          {root.name}
+                        </p>
+                        <p className="text-xs text-[var(--color-muted)]">
+                          {children.length} catégorie{children.length > 1 ? "s" : ""}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Sous-catégories preview */}
+                    {children.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {children.slice(0, 6).map((child) => (
+                          <span
+                            key={child.id}
+                            className="text-xs px-2 py-0.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)]"
+                          >
+                            {child.name}
+                          </span>
+                        ))}
+                        {children.length > 6 && (
+                          <span className="text-xs px-2 py-0.5 text-[var(--color-muted)]">
+                            +{children.length - 6}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </Link>
                 );
               })}
@@ -72,21 +98,29 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Articles récents */}
-        {recentArticles.length > 0 && (
+        {/* Fonctionnalités récentes */}
+        {recent.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-[var(--color-text)] mb-6">
-              Articles récents
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Fonctionnalités
+              </h2>
+              <Link
+                href="/features"
+                className="text-sm text-[var(--color-primary)] hover:underline"
+              >
+                Voir toutes →
+              </Link>
+            </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recentArticles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
+              {recent.map((feature) => (
+                <FeatureCard key={feature.id} feature={feature} />
               ))}
             </div>
           </section>
         )}
 
-        {/* CTA contact */}
+        {/* CTA */}
         <section className="rounded-[var(--radius-lg)] bg-[var(--color-primary-light)] border border-[var(--color-primary)]/20 p-8 text-center space-y-3">
           <h2 className="font-semibold text-[var(--color-text)]">
             Vous n&apos;avez pas trouvé votre réponse ?

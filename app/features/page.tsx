@@ -38,10 +38,7 @@ export default async function FeaturesPage({ searchParams }: PageProps) {
 
       <div className="flex gap-8">
         {/* Sidebar hiérarchique */}
-        <FeatureSidebar
-          categories={categories}
-          currentCategory={category}
-        />
+        <FeatureSidebar categories={categories} />
 
         {/* Grille */}
         <div className="flex-1 min-w-0">
