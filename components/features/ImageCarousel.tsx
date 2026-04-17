@@ -40,7 +40,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
             alt={images[0].alt}
             width={images[0].width}
             height={images[0].height}
-            className="w-auto h-auto max-w-[576px] max-h-[510px] object-contain rounded-md"
+            className="w-auto h-auto max-w-[576px] max-h-[510px] object-contain rounded-md border-1 border-black"
           />
         </div>
       </div>
@@ -89,7 +89,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
             alt={images[current].alt}
             width={images[current].width}
             height={images[current].height}
-            className={`w-auto h-auto object-contain rounded-sm ${
+            className={`w-auto h-auto object-contain rounded-sm border-1 border-black ${
               direction === "right" ? "carousel-in-right" : "carousel-in-left"
             }`}
             style={{ maxWidth: "100%", maxHeight: 440 }}

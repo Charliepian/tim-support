@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getFeatureBySlug, getAllFeatureSlugs } from "@/lib/wordpress";
+import { getFeatureBySlug, getAllFeatureSlugs, getFeatures } from "@/lib/wordpress";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import StatusBadge from "@/components/features/StatusBadge";
 import DocSection from "@/components/features/DocSection";
 import FeedbackWidget from "@/components/features/FeedbackWidget";
+import FeatureNav from "@/components/features/FeatureNav";
 import { SetActiveCategory } from "@/app/features/active-category-context";
 
 export const revalidate = 3600;
@@ -42,7 +43,12 @@ export default async function FeaturePage({
   const feature = await getFeatureBySlug(slug);
   if (!feature) notFound();
 
+  // Features de la même catégorie (ou toutes si pas de catégorie) pour la navigation
   const mainCategory = feature.categories[0];
+  const siblings = await getFeatures(mainCategory ? { category: mainCategory.slug } : {});
+  const currentIdx = siblings.findIndex((f) => f.slug === slug);
+  const prevFeature = currentIdx > 0 ? siblings[currentIdx - 1] : null;
+  const nextFeature = currentIdx >= 0 && currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
   const updatedDate  = new Date(feature.modified).toLocaleDateString("fr-FR", {
     day: "numeric", month: "long", year: "numeric",
   });
@@ -106,6 +112,12 @@ export default async function FeaturePage({
 
       {/* Feedback */}
       <FeedbackWidget postId={feature.id} />
+
+      {/* Navigation précédent / suivant */}
+      <FeatureNav
+        prev={prevFeature ? { slug: prevFeature.slug, title: prevFeature.acf?.title_feature || prevFeature.title } : undefined}
+        next={nextFeature ? { slug: nextFeature.slug, title: nextFeature.acf?.title_feature || nextFeature.title } : undefined}
+      />
     </div>
   );
 }

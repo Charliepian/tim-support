@@ -49,7 +49,7 @@ function MediaBlock({ items }: { items: MediaDocItem[] }) {
                 alt={imgAlt(item.img)}
                 width={imgWidth(item.img)}
                 height={imgHeight(item.img)}
-                className="w-auto h-auto max-w-[576px] max-h-[510px] object-contain rounded-md"
+                className="w-auto h-auto max-w-[576px] max-h-[510px] object-contain rounded-md border-1 border-black"
               />
             </div>
           );
