@@ -61,6 +61,20 @@
   --radius-btn: 0.3125rem;   /* 5px — boutons (app)    */
 }
 
+/* ─── Protection du contenu ─────────────────────────────────────────────── */
+
+.protected-content {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.protected-content img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+
 /* ─── Reset ─────────────────────────────────────────────────────────────── */
 
 * { box-sizing: border-box; }

@@ -6,6 +6,7 @@ import StatusBadge from "@/components/features/StatusBadge";
 import DocSection from "@/components/features/DocSection";
 import FeedbackWidget from "@/components/features/FeedbackWidget";
 import FeatureNav from "@/components/features/FeatureNav";
+import ContentProtection from "@/components/ui/ContentProtection";
 import { SetActiveCategory } from "@/app/features/active-category-context";
 
 export const revalidate = 3600;
@@ -62,7 +63,8 @@ export default async function FeaturePage({
   const sections = feature.acf?.doc ?? [];
 
   return (
-    <div className="max-w-5xl px-8 py-8">
+    <div className="max-w-5xl px-8 py-8 protected-content">
+      <ContentProtection />
       {feature.categories.length > 0 && (
         <SetActiveCategory slugs={feature.categories.map((c) => c.slug)} />
       )}
