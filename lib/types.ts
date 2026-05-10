@@ -29,6 +29,10 @@ export interface FeatureACF {
   short_description: string;
   status:            FeatureStatus;
   doc:               DocSection[];
+  // Champ optionnel : mots-clés / synonymes saisis par les rédacteurs pour
+  // capturer le langage utilisateur (ex: "masquer panneau, cacher barre").
+  // Accepte une textarea (séparateurs , ; saut de ligne) ou un repeater.
+  keywords?:         string | string[];
 }
 
 export interface FeatureFeedback {
@@ -45,8 +49,11 @@ export interface Feature {
   categories: FeatureTerm[];
   acf:        FeatureACF;
   feedback:   FeatureFeedback;
+  date:       string;     // ISO 8601 UTC — date de création (post_date_gmt)
   modified:   string;
-  content?:   string; // uniquement sur la fiche complète
+  content?:   string;     // uniquement sur la fiche complète
+  search_h2?: string[];   // index pré-calculé côté WP, uniquement en mode liste
+  search_h3?: string[];
 }
 
 // ─── Articles ─────────────────────────────────────────────────────────────────

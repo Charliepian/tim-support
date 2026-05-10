@@ -115,6 +115,22 @@ export default async function FeaturePage({
       {/* Feedback */}
       <FeedbackWidget postId={feature.id} />
 
+      {/* CTA report — pré-remplit type=bug, sujet et URL pour gagner du temps. */}
+      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-lg border border-border bg-surface">
+        <p className="text-sm text-muted text-center sm:text-left">
+          Un problème sur cette page ou une suggestion ?
+        </p>
+        <a
+          href={`/contact?type=assistance&url=${encodeURIComponent(mainCategory ? `/features?category=${mainCategory.slug}` : "")}&subject=${encodeURIComponent(`Problème sur "${feature.acf?.title_feature || feature.title}"`)}`}
+          className="inline-flex items-center gap-1.5 h-9 px-4 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors shrink-0"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 0 0 1.74-3l-6.93-12a2 2 0 0 0-3.48 0l-6.93 12a2 2 0 0 0 1.74 3z" />
+          </svg>
+          Signaler un problème
+        </a>
+      </div>
+
       {/* Navigation précédent / suivant */}
       <FeatureNav
         prev={prevFeature ? { slug: prevFeature.slug, title: prevFeature.acf?.title_feature || prevFeature.title } : undefined}

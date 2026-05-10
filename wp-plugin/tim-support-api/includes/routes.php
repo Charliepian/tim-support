@@ -254,11 +254,19 @@ function _tim_format_feature( WP_Post $post, bool $full ): array {
             'helpful'     => (int) get_post_meta( $post->ID, '_feedback_helpful',     true ),
             'not_helpful' => (int) get_post_meta( $post->ID, '_feedback_not_helpful', true ),
         ],
+        // ISO 8601 (UTC) — utilisé côté front pour calculer la fraîcheur des features
+        'date'       => mysql2date( 'c', $post->post_date_gmt ?: $post->post_date, false ),
         'modified'   => $post->post_modified,
     ];
 
     if ( $full ) {
         $data['content'] = apply_filters( 'the_content', $post->post_content );
+    } else {
+        // Index de recherche pré-calculé — uniquement en mode liste, qui est
+        // ce que consomme la SearchModal côté front.
+        $headings           = _tim_get_search_headings( $post->ID );
+        $data['search_h2']  = $headings['h2'];
+        $data['search_h3']  = $headings['h3'];
     }
 
     return $data;

@@ -103,6 +103,32 @@ body {
 .carousel-in-right { animation: carousel-in-right 0.32s cubic-bezier(.25,.46,.45,.94) both; }
 .carousel-in-left  { animation: carousel-in-left  0.32s cubic-bezier(.25,.46,.45,.94) both; }
 
+/* ─── Hero — grille subtile animée ───────────────────────────────────────── */
+
+.hero-grid {
+  /* Croisement de deux gradients : un trait vertical + un trait horizontal,
+     répétés tous les 44px. Couleur ultra-pâle (7 %) pour rester ambient. */
+  background-image:
+    linear-gradient(to right,  rgba(80, 80, 80, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(80, 80, 80, 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  /* Fade en ellipse : la grille s'éteint en allant vers les 4 bords,
+     visible uniquement au centre du hero. */
+  mask-image: radial-gradient(ellipse 65% 60% at center, black 35%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 60% at center, black 35%, transparent 100%);
+  animation: hero-grid-drift 24s linear infinite;
+}
+
+@keyframes hero-grid-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 44px 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-grid { animation: none; }
+}
+
+
 /* ─── Contenu WordPress (articles, descriptions features) ──────────────── */
 
 .wp-content {
@@ -174,3 +200,29 @@ body {
 .wp-content th,
 .wp-content td  { border: 1px solid var(--color-border); padding: 0.625rem 0.875rem; text-align: left; }
 .wp-content th  { background: var(--color-surface); font-weight: 600; }
+
+/* ─── Doc sections — image flottée avec wrap du texte ──────────────────────
+   Mobile : .media-float-wrap est juste un block normal (image au-dessus,
+   texte en dessous). Desktop (≥1024px) : on flotte l'image pour que le texte
+   s'écoule à côté puis sous l'image quand il déborde en hauteur.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@media (min-width: 1024px) {
+  .media-float-wrap {
+    width: 680px;
+    max-width: 60%;
+    margin-bottom: 0.75rem;
+  }
+  /* Marges externes (1.5rem) pour décoller la photo du bord du contenu,
+     marges internes (3rem) pour respirer côté texte. */
+  .media-float-wrap.media-right {
+    float: right;
+    margin-left: 3rem;
+    margin-right: 1.5rem;
+  }
+  .media-float-wrap.media-left {
+    float: left;
+    margin-right: 3rem;
+    margin-left: 1.5rem;
+  }
+}

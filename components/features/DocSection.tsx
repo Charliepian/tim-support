@@ -43,13 +43,13 @@ function MediaBlock({ items }: { items: MediaDocItem[] }) {
           const src = imgSrc(item.img);
           if (!src) return null;
           return (
-            <div key={i} className="rounded-lg border border-border bg-surface max-w-[600px] flex items-center justify-center p-3">
+            <div key={i} className="rounded-lg border border-border bg-surface flex items-center justify-center p-3">
               <Image
                 src={src}
                 alt={imgAlt(item.img)}
                 width={imgWidth(item.img)}
                 height={imgHeight(item.img)}
-                className="w-auto h-auto max-w-[576px] max-h-[510px] object-contain rounded-md border-1 border-black"
+                className="w-auto h-auto max-w-full max-h-[510px] object-contain rounded-md border-1 border-black"
               />
             </div>
           );
@@ -108,10 +108,14 @@ export default function DocSection({ section, index }: { section: DocSectionType
   const mediaRight = (section.media_position ?? "Droite") === "Droite";
   const hasMedia   = section.media_doc?.length > 0;
 
+  // En fragment plutôt qu'en `flex flex-col` : un conteneur flex établit son
+  // propre formatting context et NE wrappe PAS autour des floats voisins.
+  // Le fragment laisse les blocs (h3 + .wp-content) s'écouler nativement
+  // autour de l'image flottée.
   const textBlock = (
-    <div className="flex flex-col gap-3 justify-center">
+    <>
       {section.title_doc && (
-        <h3 className="text-lg font-semibold text-foreground">
+        <h3 className="text-lg font-semibold text-foreground mb-3">
           {section.title_doc}
         </h3>
       )}
@@ -121,7 +125,7 @@ export default function DocSection({ section, index }: { section: DocSectionType
           dangerouslySetInnerHTML={{ __html: section.description_doc }}
         />
       )}
-    </div>
+    </>
   );
 
   const mediaBlock = hasMedia ? (
@@ -129,23 +133,17 @@ export default function DocSection({ section, index }: { section: DocSectionType
   ) : null;
 
   return (
-    <div
-      className={`flex flex-col ${hasMedia ? "lg:flex-row" : ""} gap-8 py-8 ${
-        index > 0 ? "border-t border-border" : ""
-      }`}
-    >
+    <div className={`py-8 ${index > 0 ? "border-t border-border" : ""} after:block after:clear-both after:content-['']`}>
       {hasMedia ? (
-        mediaRight ? (
-          <>
-            <div className="flex-1">{textBlock}</div>
-            <div className="flex-1">{mediaBlock}</div>
-          </>
-        ) : (
-          <>
-            <div className="flex-1">{mediaBlock}</div>
-            <div className="flex-1">{textBlock}</div>
-          </>
-        )
+        <>
+          {/* Mobile : empilé. Desktop : image flottée, texte qui s'enroule
+              et passe sous l'image quand il dépasse. La marge `me-/ms-` est
+              gérée en logical properties pour suivre `mediaRight`. */}
+          <div className={`media-float-wrap ${mediaRight ? "media-right" : "media-left"} mb-6 lg:mb-3 lg:max-w-[50%] lg:w-1/2`}>
+            {mediaBlock}
+          </div>
+          {textBlock}
+        </>
       ) : (
         textBlock
       )}

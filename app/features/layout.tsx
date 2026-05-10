@@ -12,10 +12,11 @@ export default async function FeaturesLayout({
 
   return (
     <ActiveCategoryProvider>
-      <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="flex items-start">
 
-        {/* Sidebar — scroll indépendant */}
-        <aside className="w-64 shrink-0 border-r border-border overflow-y-auto bg-white">
+        {/* Sidebar — sticky sous le header (h-16 = top-16), scroll interne
+            uniquement si la liste dépasse la hauteur du viewport. */}
+        <aside className="w-64 shrink-0 border-r border-border bg-white sticky top-16 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="p-4 pt-6">
             <Suspense>
               <FeatureSidebar categories={categories} />
@@ -23,8 +24,9 @@ export default async function FeaturesLayout({
           </div>
         </aside>
 
-        {/* Contenu — scroll indépendant */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Contenu — flow normal, le scroll appartient à la page (donc le footer
+            est atteignable en bas), pas à un sous-conteneur. */}
+        <div className="flex-1 min-w-0">
           {children}
         </div>
 
