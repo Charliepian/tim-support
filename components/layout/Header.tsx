@@ -56,6 +56,12 @@ export default function Header() {
               />
             </Link>
             <Link
+              href="/parcours"
+              className="hidden md:inline-flex items-center text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              Parcours
+            </Link>
+            <Link
               href="/nouveautes"
               className="hidden md:inline-flex items-center text-sm font-medium text-foreground hover:text-primary transition-colors"
             >

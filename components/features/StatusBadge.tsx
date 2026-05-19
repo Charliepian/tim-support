@@ -7,6 +7,12 @@ const styles: Record<FeatureStatus, string> = {
 };
 
 export default function StatusBadge({ status }: { status: FeatureStatus }) {
+  // "Disponible" est l'état nominal — pas besoin de l'afficher (ça surcharge
+  // visuellement les cartes alors que c'est le cas par défaut de presque toutes
+  // les features). On garde le badge pour Beta et Prochainement, qui signalent
+  // une info utile à l'utilisateur.
+  if (status === "Disponible") return null;
+
   return (
     <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${styles[status] ?? styles.Disponible}`}>
       {status}

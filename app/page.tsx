@@ -54,9 +54,27 @@ export default async function HomePage() {
 
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-14">
 
-        {/* ─── 3 actions principales — Doc / Assistance / Suggestion ─────── */}
+        {/* ─── 4 actions principales — Parcours / Doc / Assistance / Suggestion ─── */}
         <section>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link
+              href="/parcours"
+              className="group flex flex-col gap-3 p-6 rounded-lg border border-border bg-white hover:border-primary hover:shadow-md transition-all"
+            >
+              <span className="text-3xl" aria-hidden>🎓</span>
+              <div>
+                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                  Suivre un parcours
+                </h3>
+                <p className="text-sm text-muted mt-1">
+                  Apprenez les bases étape par étape, selon votre profil utilisateur.
+                </p>
+              </div>
+              <span className="text-sm text-primary font-medium mt-auto">
+                Démarrer →
+              </span>
+            </Link>
+
             <Link
               href="/features"
               className="group flex flex-col gap-3 p-6 rounded-lg border border-border bg-white hover:border-primary hover:shadow-md transition-all"

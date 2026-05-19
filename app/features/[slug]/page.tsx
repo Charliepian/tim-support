@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getFeatureBySlug, getAllFeatureSlugs, getFeatures } from "@/lib/wordpress";
+import { htmlToText } from "@/lib/html";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import StatusBadge from "@/components/features/StatusBadge";
 import DocSection from "@/components/features/DocSection";
@@ -26,7 +27,7 @@ export async function generateMetadata({
   if (!feature) return {};
 
   const description = feature.acf?.short_description
-    ? feature.acf.short_description.replace(/<[^>]+>/g, "").slice(0, 160)
+    ? htmlToText(feature.acf.short_description).slice(0, 160)
     : undefined;
 
   return {

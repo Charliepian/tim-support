@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Feature, FeatureACF, FeatureTerm } from "@/lib/types";
+import { htmlToText } from "@/lib/html";
 
 interface Props {
   open:          boolean;
@@ -11,9 +12,9 @@ interface Props {
   initialQuery?: string;
 }
 
-/** Retire les balises HTML et normalise les espaces (sans toucher la casse) */
+/** Retire les balises HTML, normalise les espaces ET décode les entities. */
 function strip(html: string) {
-  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return htmlToText(html);
 }
 
 /** Retire les diacritiques (é → e, ç → c, etc.) — match insensible aux accents */

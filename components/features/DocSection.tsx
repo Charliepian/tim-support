@@ -42,6 +42,9 @@ function MediaBlock({ items }: { items: MediaDocItem[] }) {
         if (item.acf_fc_layout === "img" && item.img) {
           const src = imgSrc(item.img);
           if (!src) return null;
+          // Les GIF doivent être servis "bruts" — next/image les ré-encode
+          // sinon, ce qui casse l'animation ou la limite à une seule passe.
+          const isAnimated = /\.gif(\?|$)/i.test(src);
           return (
             <div key={i} className="rounded-lg border border-border bg-surface flex items-center justify-center p-3">
               <Image
@@ -49,6 +52,7 @@ function MediaBlock({ items }: { items: MediaDocItem[] }) {
                 alt={imgAlt(item.img)}
                 width={imgWidth(item.img)}
                 height={imgHeight(item.img)}
+                unoptimized={isAnimated}
                 className="w-auto h-auto max-w-full max-h-[510px] object-contain rounded-md border-1 border-black"
               />
             </div>

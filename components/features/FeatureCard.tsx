@@ -3,10 +3,11 @@ import Image from "next/image";
 import type { Feature } from "@/lib/types";
 import StatusBadge from "./StatusBadge";
 import { isFeatureRecent } from "@/lib/feature-utils";
+import { htmlToText } from "@/lib/html";
 
 export default function FeatureCard({ feature }: { feature: Feature }) {
   const excerpt = feature.acf?.short_description
-    ? feature.acf.short_description.replace(/<[^>]+>/g, "").slice(0, 120)
+    ? htmlToText(feature.acf.short_description).slice(0, 120)
     : "";
 
   const isNew = isFeatureRecent(feature.date);

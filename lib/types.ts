@@ -118,3 +118,22 @@ export interface ArticleFull extends ArticleSummary {
     description?: string;
   };
 }
+
+// ─── Parcours d'apprentissage ────────────────────────────────────────────────
+
+export type ParcoursProfil = "admin" | "conducteur" | "chef-chantier" | "compagnon" | "";
+
+export interface ParcoursSummary {
+  id:         number;
+  slug:       string;
+  title:      string;
+  intro:      string;
+  profil:     ParcoursProfil;
+  order:      number;   // menu_order WP, croissant
+  step_count: number;
+  modified:   string;
+}
+
+export interface ParcoursFull extends Omit<ParcoursSummary, "step_count"> {
+  steps: Feature[]; // features ordonnées, embedded en full (avec content)
+}

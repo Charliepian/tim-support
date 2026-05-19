@@ -228,6 +228,27 @@ export async function getAllFeatureSlugs(): Promise<string[]> {
   return features.map((f) => f.slug);
 }
 
+// ─── Parcours d'apprentissage ────────────────────────────────────────────────
+
+/** Liste tous les parcours publiés (résumé sans le contenu des steps) */
+export async function getParcours(): Promise<import("@/lib/types").ParcoursSummary[]> {
+  const r = await timFetch<import("@/lib/types").ParcoursSummary[]>("/parcours");
+  return r ?? [];
+}
+
+/** Parcours complet avec features embedded (full, prêtes à rendre) */
+export async function getParcoursBySlug(
+  slug: string
+): Promise<import("@/lib/types").ParcoursFull | null> {
+  return timFetch<import("@/lib/types").ParcoursFull>(`/parcours/${slug}`);
+}
+
+/** Slugs de tous les parcours — pour generateStaticParams */
+export async function getAllParcoursSlugs(): Promise<string[]> {
+  const list = await getParcours();
+  return list.map((p) => p.slug);
+}
+
 /** Envoie un feedback utilisateur (côté client uniquement) */
 export async function submitFeedback(
   postId: number,

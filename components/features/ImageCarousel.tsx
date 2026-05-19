@@ -10,6 +10,9 @@ interface CarouselImage {
   height: number;
 }
 
+/** GIF animé → on désactive next/image pour préserver l'animation en loop. */
+const isAnimated = (src: string) => /\.gif(\?|$)/i.test(src);
+
 export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
   const [current,   setCurrent]   = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
@@ -40,6 +43,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
             alt={images[0].alt}
             width={images[0].width}
             height={images[0].height}
+            unoptimized={isAnimated(images[0].src)}
             className="w-auto h-auto max-w-[576px] max-h-[510px] object-contain rounded-md border-1 border-black"
           />
         </div>
@@ -75,6 +79,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
               alt={images[prevIdx].alt}
               width={images[prevIdx].width}
               height={images[prevIdx].height}
+              unoptimized={isAnimated(images[prevIdx].src)}
               className="w-auto object-contain"
               style={{ maxHeight: 420, maxWidth: 150 }}
             />
@@ -89,6 +94,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
             alt={images[current].alt}
             width={images[current].width}
             height={images[current].height}
+            unoptimized={isAnimated(images[current].src)}
             className={`w-auto h-auto object-contain rounded-sm border-1 border-black ${
               direction === "right" ? "carousel-in-right" : "carousel-in-left"
             }`}
@@ -112,6 +118,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
               alt={images[nextIdx].alt}
               width={images[nextIdx].width}
               height={images[nextIdx].height}
+              unoptimized={isAnimated(images[nextIdx].src)}
               className="w-auto object-contain"
               style={{ maxHeight: 420, maxWidth: 150 }}
             />
