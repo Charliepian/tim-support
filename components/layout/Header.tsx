@@ -73,12 +73,13 @@ export default function Header() {
           <div className="flex justify-center">
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-3 w-full max-w-sm h-9 px-3 bg-surface border border-border rounded-md text-sm text-muted hover:border-[#b4b4b4] hover:bg-white transition-all group"
+              aria-label="Rechercher"
+              className="flex items-center justify-center sm:justify-start gap-3 w-9 sm:w-full sm:max-w-sm h-9 px-0 sm:px-3 bg-surface border border-border rounded-md text-sm text-muted hover:border-[#b4b4b4] hover:bg-white transition-all group"
             >
               <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
               </svg>
-              <span className="flex-1 text-left">Rechercher...</span>
+              <span className="hidden sm:block flex-1 text-left">Rechercher...</span>
               <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] font-mono px-1.5 py-0.5 rounded border border-border bg-white text-muted group-hover:border-[#b4b4b4]/40 transition-colors">
                 <span>⌘</span><span>K</span>
               </kbd>

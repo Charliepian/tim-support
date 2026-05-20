@@ -103,6 +103,17 @@ body {
 .carousel-in-right { animation: carousel-in-right 0.32s cubic-bezier(.25,.46,.45,.94) both; }
 .carousel-in-left  { animation: carousel-in-left  0.32s cubic-bezier(.25,.46,.45,.94) both; }
 
+/* ─── Mobile drawer — glisse depuis la gauche ─────────────────────────────── */
+
+@keyframes mobile-drawer-slide-in {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+.mobile-drawer-in {
+  animation: mobile-drawer-slide-in 0.22s cubic-bezier(.25,.46,.45,.94) both;
+}
+
 /* ─── Hero — grille subtile animée ───────────────────────────────────────── */
 
 .hero-grid {

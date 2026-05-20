@@ -4,8 +4,19 @@ import type { Feature } from "@/lib/types";
 export const NEW_FEATURE_DAYS = 30;
 
 /**
- * Renvoie true si la feature a été créée il y a moins de `days` jours.
- * Tolérant : retourne false si la date est manquante, invalide ou dans le futur.
+ * Date pivot — toutes les features dont la date de création est ANTÉRIEURE
+ * à cette date ne reçoivent jamais le badge "Nouveauté".
+ *
+ * Permet d'éviter de marquer comme "nouveau" l'ensemble des features
+ * historiques au moment de l'activation du système. À partir de cette date,
+ * seules les nouvelles publications WP recevront le badge (pendant 30 jours).
+ */
+export const NEW_FEATURE_SINCE = "2026-05-20T00:00:00Z";
+
+/**
+ * Renvoie true si la feature a été créée il y a moins de `days` jours
+ * ET après la date pivot `NEW_FEATURE_SINCE`. Tolérant : retourne false si
+ * la date est manquante, invalide ou dans le futur.
  */
 export function isFeatureRecent(
   dateStr: string | undefined | null,
@@ -14,6 +25,11 @@ export function isFeatureRecent(
   if (!dateStr) return false;
   const created = new Date(dateStr).getTime();
   if (isNaN(created)) return false;
+
+  // 1. Doit être créée à partir de la date pivot (exclut l'historique)
+  if (created < new Date(NEW_FEATURE_SINCE).getTime()) return false;
+
+  // 2. Doit être dans les `days` derniers jours
   const diffDays = (Date.now() - created) / (1000 * 60 * 60 * 24);
   return diffDays >= 0 && diffDays < days;
 }

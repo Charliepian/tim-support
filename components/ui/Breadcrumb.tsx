@@ -7,7 +7,7 @@ export interface BreadcrumbItem {
 
 export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
-    <nav aria-label="Fil d'Ariane" className="flex items-center gap-1.5 text-sm text-muted">
+    <nav aria-label="Fil d'Ariane" className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-muted">
       <Link href="/" className="hover:text-foreground transition-colors">
         Aide
       </Link>

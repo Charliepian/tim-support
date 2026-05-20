@@ -141,9 +141,11 @@ export default function FeatureSidebar({ categories }: { categories: FeatureTerm
   const currentCat  = searchParams.get("category") ?? "";
   const tree        = buildTree(categories);
 
+  // Note : la masquage responsive est géré par les composants parents
+  // (FeaturesLayout aside + MobileSidebarTrigger drawer) — pas ici.
   return (
-    <aside className="w-56 shrink-0 hidden lg:block">
-      <nav className="sticky top-24">
+    <aside className="w-full lg:w-56 shrink-0">
+      <nav className="lg:sticky lg:top-24">
         <ul className="space-y-0.5">
           {/* Toutes */}
           <li>
