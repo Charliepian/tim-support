@@ -48,3 +48,53 @@ export function getRecentFeatures(
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit);
 }
+
+// ─── Modifications récentes ─────────────────────────────────────────────────
+
+/** Même fenêtre de 30 jours que pour les nouveautés. */
+export const MODIFIED_FEATURE_DAYS = 30;
+
+/**
+ * Date pivot — toute modification antérieure ne donne pas de badge "Modifié".
+ * Identique au pivot des Nouveautés pour ignorer l'historique de l'import.
+ */
+export const MODIFIED_FEATURE_SINCE = NEW_FEATURE_SINCE;
+
+/**
+ * Renvoie true si la feature a été modifiée récemment ET n'est pas considérée
+ * comme une nouveauté (sinon "Nouveauté" prend la priorité).
+ */
+export function isFeatureModified(
+  feature: Pick<Feature, "date" | "modified">,
+  days = MODIFIED_FEATURE_DAYS
+): boolean {
+  // Si c'est une nouveauté, on n'affiche pas le badge "Modifié" en parallèle —
+  // une feature toute neuve n'est pas "modifiée" mais "créée".
+  if (isFeatureRecent(feature.date)) return false;
+
+  if (!feature.modified) return false;
+  const mod = new Date(feature.modified).getTime();
+  if (isNaN(mod)) return false;
+
+  // Doit être modifiée après le pivot
+  if (mod < new Date(MODIFIED_FEATURE_SINCE).getTime()) return false;
+
+  // Doit être dans les `days` derniers jours
+  const diffDays = (Date.now() - mod) / (1000 * 60 * 60 * 24);
+  return diffDays >= 0 && diffDays < days;
+}
+
+/**
+ * Features modifiées récemment (mais pas créées récemment), triées par date
+ * de modification décroissante.
+ */
+export function getModifiedFeatures(
+  features: Feature[],
+  limit = 10,
+  days = MODIFIED_FEATURE_DAYS
+): Feature[] {
+  return features
+    .filter((f) => isFeatureModified(f, days))
+    .sort((a, b) => new Date(b.modified).getTime() - new Date(a.modified).getTime())
+    .slice(0, limit);
+}

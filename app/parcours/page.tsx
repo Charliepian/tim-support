@@ -53,7 +53,7 @@ export default async function ParcoursIndexPage({
         <Breadcrumb items={[{ label: "Parcours" }]} />
 
         <header className="mt-8 mb-12 text-center max-w-2xl mx-auto">
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-primary-light text-primary text-[11px] font-bold tracking-wider uppercase mb-4">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-[5px] bg-primary-light text-primary text-[11px] font-bold tracking-wider uppercase mb-4">
             Étape 1 sur 2
           </span>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
@@ -157,7 +157,7 @@ export default async function ParcoursIndexPage({
           <span aria-hidden>{selectedProfil.icon}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-surface text-muted text-[10px] font-bold tracking-wider uppercase mb-2">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-[5px] bg-surface text-muted text-[10px] font-bold tracking-wider uppercase mb-2">
             Étape 2 sur 2
           </span>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">

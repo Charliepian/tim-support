@@ -304,7 +304,7 @@ export default function SearchModal({ open, onClose, initialQuery }: Props) {
                 <button
                   key={cat.id}
                   onClick={() => navigate(`/features?category=${cat.slug}`)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border border-border bg-surface text-foreground hover:bg-[#f0f0f0] transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[5px] text-sm border border-border bg-surface text-foreground hover:bg-[#f0f0f0] transition-all"
                 >
                   {cat.slug === "web" ? "🖥️" : cat.slug === "mobile" ? "📱" : "📁"}
                   {cat.name}
@@ -312,7 +312,7 @@ export default function SearchModal({ open, onClose, initialQuery }: Props) {
               ))}
               <button
                 onClick={() => navigate("/features")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border border-border text-muted hover:bg-surface transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[5px] text-sm border border-border text-muted hover:bg-surface transition-all"
               >
                 Toutes →
               </button>

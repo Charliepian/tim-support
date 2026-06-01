@@ -14,7 +14,7 @@ export default function StatusBadge({ status }: { status: FeatureStatus }) {
   if (status === "Disponible") return null;
 
   return (
-    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${styles[status] ?? styles.Disponible}`}>
+    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-[5px] border ${styles[status] ?? styles.Disponible}`}>
       {status}
     </span>
   );

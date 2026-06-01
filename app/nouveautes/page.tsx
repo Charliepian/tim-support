@@ -21,7 +21,7 @@ export default async function NouveautesPage() {
       <Breadcrumb items={[{ label: "Nouveautés" }]} />
 
       <header className="mt-6 mb-10">
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-unavailable text-white text-[10px] font-bold tracking-wider uppercase mb-3">
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[5px] bg-unavailable text-white text-[10px] font-bold tracking-wider uppercase mb-3">
           Nouveau
         </span>
         <h1 className="text-3xl sm:text-4xl font-bold text-foreground">

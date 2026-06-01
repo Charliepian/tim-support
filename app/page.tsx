@@ -3,7 +3,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import FeatureCard from "@/components/features/FeatureCard";
 import Link from "next/link";
 import type { FeatureTerm } from "@/lib/types";
-import { getRecentFeatures, NEW_FEATURE_DAYS } from "@/lib/feature-utils";
+import { getRecentFeatures, getModifiedFeatures, NEW_FEATURE_DAYS, MODIFIED_FEATURE_DAYS } from "@/lib/feature-utils";
 
 export const revalidate = 3600;
 
@@ -22,10 +22,11 @@ export default async function HomePage() {
   const childrenOf = (parentId: number): FeatureTerm[] =>
     categories.filter((c) => c.parent === parentId);
 
-  const featureCount   = allFeatures.length;
-  // 10 dernières features ajoutées dans les NEW_FEATURE_DAYS jours, triées
-  // par date desc. Vide si aucune feature ajoutée dans la fenêtre.
-  const recentFeatures = getRecentFeatures(allFeatures, 10);
+  const featureCount     = allFeatures.length;
+  // 10 dernières features ajoutées dans les NEW_FEATURE_DAYS jours.
+  const recentFeatures   = getRecentFeatures(allFeatures, 10);
+  // Features modifiées récemment (mais pas créées récemment).
+  const modifiedFeatures = getModifiedFeatures(allFeatures, 10);
 
   return (
     <>
@@ -36,7 +37,7 @@ export default async function HomePage() {
         <div aria-hidden className="pointer-events-none absolute inset-0 hero-grid" />
 
         <div className="relative max-w-3xl mx-auto text-center space-y-5">
-          <p className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary-light px-3 py-1 rounded-full">
+          <p className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary-light px-3 py-1 rounded-[5px]">
             Centre d&apos;aide
           </p>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
@@ -168,7 +169,7 @@ export default async function HomePage() {
                         {children.slice(0, 6).map((child) => (
                           <span
                             key={child.id}
-                            className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-muted"
+                            className="text-xs px-2 py-0.5 rounded-[5px] bg-surface border border-border text-muted"
                           >
                             {child.name}
                           </span>
@@ -222,6 +223,46 @@ export default async function HomePage() {
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
                 >
                   Voir toutes les nouveautés
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ─── Mises à jour récentes ───────────────────────────────────────
+            Features modifiées (post_modified) dans les MODIFIED_FEATURE_DAYS
+            derniers jours et qui ne sont pas considérées comme nouveautés. */}
+        {modifiedFeatures.length > 0 && (
+          <section className="relative overflow-hidden rounded-2xl border border-border bg-white px-6 py-8 sm:px-10 sm:py-10">
+            <div aria-hidden className="pointer-events-none absolute inset-0 hero-grid" />
+
+            <div className="relative">
+              <div className="flex items-start justify-between mb-7 gap-4 flex-wrap">
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+                    Mises à jour
+                  </h2>
+                  <p className="text-sm text-muted mt-1.5">
+                    Les fonctionnalités modifiées ces {MODIFIED_FEATURE_DAYS} derniers jours.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {modifiedFeatures.map((feature) => (
+                  <FeatureCard key={feature.id} feature={feature} />
+                ))}
+              </div>
+
+              <div className="flex justify-center mt-8">
+                <Link
+                  href="/mises-a-jour"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
+                >
+                  Voir toutes les mises à jour
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>

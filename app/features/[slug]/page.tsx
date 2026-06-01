@@ -79,7 +79,7 @@ export default async function FeaturePage({
           {feature.platforms.map((p) => (
             <span
               key={p.id}
-              className="text-xs font-medium px-2 py-0.5 rounded-full bg-absence-bg text-absence border border-absence/30"
+              className="text-xs font-medium px-2 py-0.5 rounded-[5px] bg-absence-bg text-absence border border-absence/30"
             >
               {p.name}
             </span>

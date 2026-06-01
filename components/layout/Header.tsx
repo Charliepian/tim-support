@@ -67,6 +67,12 @@ export default function Header() {
             >
               Nouveautés
             </Link>
+            <Link
+              href="/mises-a-jour"
+              className="hidden md:inline-flex items-center text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              Mises à jour
+            </Link>
           </div>
 
           {/* Bloc centre — Trigger recherche, centré dans la cellule */}

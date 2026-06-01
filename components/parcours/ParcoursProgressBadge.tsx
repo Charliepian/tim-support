@@ -33,7 +33,7 @@ export default function ParcoursProgressBadge({ slug, totalSteps }: Props) {
 
   const style = STYLES[status];
   return (
-    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${style.cls}`}>
+    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-[5px] border ${style.cls}`}>
       {style.label}
       {status === "in_progress" && <span className="opacity-70">· {percent}%</span>}
     </span>

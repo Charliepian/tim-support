@@ -72,7 +72,7 @@ export default async function ArticlePage({
                 {article.categories.map((cat) => (
                   <span
                     key={cat.id}
-                    className="text-xs font-medium px-2.5 py-1 rounded-full bg-absence-bg text-absence border border-absence/30"
+                    className="text-xs font-medium px-2.5 py-1 rounded-[5px] bg-absence-bg text-absence border border-absence/30"
                   >
                     {cat.name}
                   </span>

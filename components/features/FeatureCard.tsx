@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Feature } from "@/lib/types";
 import StatusBadge from "./StatusBadge";
-import { isFeatureRecent } from "@/lib/feature-utils";
+import { isFeatureRecent, isFeatureModified } from "@/lib/feature-utils";
 import { htmlToText } from "@/lib/html";
 
 export default function FeatureCard({ feature }: { feature: Feature }) {
@@ -10,19 +10,25 @@ export default function FeatureCard({ feature }: { feature: Feature }) {
     ? htmlToText(feature.acf.short_description).slice(0, 120)
     : "";
 
-  const isNew = isFeatureRecent(feature.date);
+  // Priorité : "Nouveauté" > "Modifié" > rien. Les deux ne coexistent jamais.
+  const isNew      = isFeatureRecent(feature.date);
+  const isModified = !isNew && isFeatureModified(feature);
 
   return (
     <Link
       href={`/features/${feature.slug}`}
       className="group flex flex-col rounded-lg border border-border bg-white hover:border-[#b4b4b4] hover:shadow-sm transition-all overflow-hidden relative"
     >
-      {/* Badge "Nouveauté" — visible uniquement < 30 jours après création.
-          Positionné en absolu en haut-droite pour rester visible même si la
-          carte n'a pas de thumbnail. Violet doux (--color-unavailable). */}
+      {/* Badges — soit "Nouveauté" (violet) soit "Modifié" (orange), jamais les deux.
+          Disparaissent tous les deux automatiquement après 30 jours. */}
       {isNew && (
-        <span className="absolute top-2 right-2 z-10 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-unavailable-bg text-unavailable border border-unavailable/30 backdrop-blur-sm">
+        <span className="absolute top-2 right-2 z-10 text-[11px] font-semibold px-2 py-0.5 rounded-[5px] bg-unavailable-bg text-unavailable border border-unavailable/30 backdrop-blur-sm">
           Nouveauté
+        </span>
+      )}
+      {isModified && (
+        <span className="absolute top-2 right-2 z-10 text-[11px] font-semibold px-2 py-0.5 rounded-[5px] bg-processing-bg text-processing-text border border-processing/30 backdrop-blur-sm">
+          Modifié
         </span>
       )}
 
@@ -48,7 +54,7 @@ export default function FeatureCard({ feature }: { feature: Feature }) {
           {feature.platforms.map((p) => (
             <span
               key={p.id}
-              className="text-xs font-medium px-2 py-0.5 rounded-full bg-absence-bg text-absence border border-absence/30"
+              className="text-xs font-medium px-2 py-0.5 rounded-[5px] bg-absence-bg text-absence border border-absence/30"
             >
               {p.name}
             </span>
